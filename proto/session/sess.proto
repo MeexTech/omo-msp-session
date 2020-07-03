@@ -6,7 +6,7 @@ option go_package= "session";
 service SessionService {
   rpc Create(ReqSessionAdd) returns (ReplyInfo) {}
   rpc CheckAvailable(RequestInfo) returns (ReplyAvailable) {}
-  rpc Remove(RequestInfo) returns (ReplyInfo) {}
+  rpc Remove(ReqSessionRemove) returns (ReplyInfo) {}
 }
 
 enum ResultStatus {
@@ -19,7 +19,7 @@ enum ResultStatus {
 }
 
 message ReqSessionAdd {
-  string uid = 1;
+  string user = 1;
 }
 
 message RequestInfo {
@@ -28,12 +28,18 @@ message RequestInfo {
 
 message ReplyInfo {
   string uid = 1;
-  string token = 2;
-  ResultStatus status = 3;
+  string user = 2;
+  string token = 3;
+  ResultStatus status = 4;
+}
+
+message ReqSessionRemove {
+  string user = 1;
 }
 
 message ReplyAvailable {
   string uid = 1;
-  bool available = 2;
-  ResultStatus status = 3;
+  string user = 2;
+  bool available = 3;
+  ResultStatus status = 4;
 }

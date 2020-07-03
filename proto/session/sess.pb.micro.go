@@ -44,7 +44,7 @@ func NewSessionServiceEndpoints() []*api.Endpoint {
 type SessionService interface {
 	Create(ctx context.Context, in *ReqSessionAdd, opts ...client.CallOption) (*ReplyInfo, error)
 	CheckAvailable(ctx context.Context, in *RequestInfo, opts ...client.CallOption) (*ReplyAvailable, error)
-	Remove(ctx context.Context, in *RequestInfo, opts ...client.CallOption) (*ReplyInfo, error)
+	Remove(ctx context.Context, in *ReqSessionRemove, opts ...client.CallOption) (*ReplyInfo, error)
 }
 
 type sessionService struct {
@@ -79,7 +79,7 @@ func (c *sessionService) CheckAvailable(ctx context.Context, in *RequestInfo, op
 	return out, nil
 }
 
-func (c *sessionService) Remove(ctx context.Context, in *RequestInfo, opts ...client.CallOption) (*ReplyInfo, error) {
+func (c *sessionService) Remove(ctx context.Context, in *ReqSessionRemove, opts ...client.CallOption) (*ReplyInfo, error) {
 	req := c.c.NewRequest(c.name, "SessionService.Remove", in)
 	out := new(ReplyInfo)
 	err := c.c.Call(ctx, req, out, opts...)
@@ -94,14 +94,14 @@ func (c *sessionService) Remove(ctx context.Context, in *RequestInfo, opts ...cl
 type SessionServiceHandler interface {
 	Create(context.Context, *ReqSessionAdd, *ReplyInfo) error
 	CheckAvailable(context.Context, *RequestInfo, *ReplyAvailable) error
-	Remove(context.Context, *RequestInfo, *ReplyInfo) error
+	Remove(context.Context, *ReqSessionRemove, *ReplyInfo) error
 }
 
 func RegisterSessionServiceHandler(s server.Server, hdlr SessionServiceHandler, opts ...server.HandlerOption) error {
 	type sessionService interface {
 		Create(ctx context.Context, in *ReqSessionAdd, out *ReplyInfo) error
 		CheckAvailable(ctx context.Context, in *RequestInfo, out *ReplyAvailable) error
-		Remove(ctx context.Context, in *RequestInfo, out *ReplyInfo) error
+		Remove(ctx context.Context, in *ReqSessionRemove, out *ReplyInfo) error
 	}
 	type SessionService struct {
 		sessionService
@@ -122,6 +122,6 @@ func (h *sessionServiceHandler) CheckAvailable(ctx context.Context, in *RequestI
 	return h.SessionServiceHandler.CheckAvailable(ctx, in, out)
 }
 
-func (h *sessionServiceHandler) Remove(ctx context.Context, in *RequestInfo, out *ReplyInfo) error {
+func (h *sessionServiceHandler) Remove(ctx context.Context, in *ReqSessionRemove, out *ReplyInfo) error {
 	return h.SessionServiceHandler.Remove(ctx, in, out)
 }
