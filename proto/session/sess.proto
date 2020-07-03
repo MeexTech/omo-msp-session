@@ -4,7 +4,7 @@ package omo.msp.session;
 option go_package= "session";
 
 service SessionService {
-  rpc Create(RequestInfo) returns (ReplyInfo) {}
+  rpc Create(ReqSessionAdd) returns (ReplyInfo) {}
   rpc CheckAvailable(RequestInfo) returns (ReplyAvailable) {}
   rpc Remove(RequestInfo) returns (ReplyInfo) {}
 }
@@ -18,8 +18,12 @@ enum ResultStatus {
   Empty = 5;
 }
 
-message RequestInfo {
+message ReqSessionAdd {
   string uid = 1;
+}
+
+message RequestInfo {
+  string token = 1;
 }
 
 message ReplyInfo {

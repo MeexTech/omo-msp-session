@@ -42,7 +42,7 @@ func NewSessionServiceEndpoints() []*api.Endpoint {
 // Client API for SessionService service
 
 type SessionService interface {
-	Create(ctx context.Context, in *RequestInfo, opts ...client.CallOption) (*ReplyInfo, error)
+	Create(ctx context.Context, in *ReqSessionAdd, opts ...client.CallOption) (*ReplyInfo, error)
 	CheckAvailable(ctx context.Context, in *RequestInfo, opts ...client.CallOption) (*ReplyAvailable, error)
 	Remove(ctx context.Context, in *RequestInfo, opts ...client.CallOption) (*ReplyInfo, error)
 }
@@ -59,7 +59,7 @@ func NewSessionService(name string, c client.Client) SessionService {
 	}
 }
 
-func (c *sessionService) Create(ctx context.Context, in *RequestInfo, opts ...client.CallOption) (*ReplyInfo, error) {
+func (c *sessionService) Create(ctx context.Context, in *ReqSessionAdd, opts ...client.CallOption) (*ReplyInfo, error) {
 	req := c.c.NewRequest(c.name, "SessionService.Create", in)
 	out := new(ReplyInfo)
 	err := c.c.Call(ctx, req, out, opts...)
@@ -92,14 +92,14 @@ func (c *sessionService) Remove(ctx context.Context, in *RequestInfo, opts ...cl
 // Server API for SessionService service
 
 type SessionServiceHandler interface {
-	Create(context.Context, *RequestInfo, *ReplyInfo) error
+	Create(context.Context, *ReqSessionAdd, *ReplyInfo) error
 	CheckAvailable(context.Context, *RequestInfo, *ReplyAvailable) error
 	Remove(context.Context, *RequestInfo, *ReplyInfo) error
 }
 
 func RegisterSessionServiceHandler(s server.Server, hdlr SessionServiceHandler, opts ...server.HandlerOption) error {
 	type sessionService interface {
-		Create(ctx context.Context, in *RequestInfo, out *ReplyInfo) error
+		Create(ctx context.Context, in *ReqSessionAdd, out *ReplyInfo) error
 		CheckAvailable(ctx context.Context, in *RequestInfo, out *ReplyAvailable) error
 		Remove(ctx context.Context, in *RequestInfo, out *ReplyInfo) error
 	}
@@ -114,7 +114,7 @@ type sessionServiceHandler struct {
 	SessionServiceHandler
 }
 
-func (h *sessionServiceHandler) Create(ctx context.Context, in *RequestInfo, out *ReplyInfo) error {
+func (h *sessionServiceHandler) Create(ctx context.Context, in *ReqSessionAdd, out *ReplyInfo) error {
 	return h.SessionServiceHandler.Create(ctx, in, out)
 }
 
